@@ -2,23 +2,33 @@
 
 import pygame
 
-# Window dimensions 
+# Window dimensions
 WIDTH, HEIGHT = 1280, 800
+
 # Colors
 BACKGROUND = (18, 18, 18)
 FONT_COLOR = (255, 255, 255)
+TILE_COLOR = (35, 35, 35)
+TILE_BORDER_COLOR = (90, 90, 90)
+
+# Game board dimensions
+ROWS = 5
+COLS = 5
+TILE_SIZE = 64
+TILE_GAP = 10
 
 
 def make_fonts():
-    """ Dictionary of font types
-    - title (Default font, size 120px)
-    - body (Default font, size 40px)
-    """
-    return {"title": pygame.font.Font(None, 120), 
-            "body": pygame.font.Font(None, 40)}
+    """Dictionary of font types."""
+    return {
+        "title": pygame.font.Font(None, 120),
+        "body": pygame.font.Font(None, 40),
+        "tile": pygame.font.Font(None, 64)
+    }
+
 
 def draw_text(screen, text, font, color, center):
-    """ Draws text on the screen
+    """Draws text on the screen.
     - screen (pygame.Surface): The window to draw on
     - text (str): Text to print
     - font (pygame.font.Font): Desired font type
@@ -28,25 +38,75 @@ def draw_text(screen, text, font, color, center):
     surface = font.render(text, True, color)
     screen.blit(surface, surface.get_rect(center=center))
 
+
 def draw_start_screen(screen, fonts):
-    """ Start screen that displays program name and prompts the user to play.
+    """Start screen that displays program name and prompts the user to play.
     """
     screen.fill(BACKGROUND)
-    draw_text(screen, "WordlePlus", fonts["title"],
-               FONT_COLOR, (WIDTH // 2, 220))
-    draw_text(screen, "Press Enter to play", fonts["body"],
-               FONT_COLOR, (WIDTH // 2, 330))
+
+    draw_text(
+        screen, "WordlePlus", fonts["title"],
+        FONT_COLOR, (WIDTH // 2, 220)
+    )
+
+    draw_text(
+        screen, "Press Enter to play", fonts["body"],
+        FONT_COLOR, (WIDTH // 2, 330)
+    )
 
 
-# We might add the WIN and LOSE screens here instead of a different Python file.
 
+def draw_game_board(screen, current_guess, fonts):
+    """Draws the 5x5 game board and displays typed letters.
 
-# THIS CAN BE COPIED AND PASTED AS NEEDED TO MAKE NEW WINDOWS
-def draw_game_placeholder(screen, fonts):
-    """ TEMPLATE
+    Args:
+        screen (pygame.Surface): The game window.
+        current_guess (str): Letters currently entered by the player.
     """
+    # Calculate the total board dimensions.
+    board_width = COLS * TILE_SIZE + (COLS - 1) * TILE_GAP
+    board_height = ROWS * TILE_SIZE + (ROWS - 1) * TILE_GAP
+
+    # Calculate the top-left corner to center the board.
+    start_x = (WIDTH - board_width) // 2
+    start_y = (HEIGHT - board_height) // 2 + 50
+
+    # Draw each tile.
+    for row in range(ROWS):
+        for col in range(COLS):
+            x = start_x + col * (TILE_SIZE + TILE_GAP)
+            y = start_y + row * (TILE_SIZE + TILE_GAP)
+
+            tile = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
+
+            pygame.draw.rect(screen, TILE_COLOR, tile)
+            pygame.draw.rect(
+                screen, TILE_BORDER_COLOR, tile, width=2
+            )
+
+            # Display letters in the first row.
+            if row == 0 and col < len(current_guess):
+                draw_text(
+                    screen,
+                    current_guess[col],
+                    fonts["tile"],
+                    FONT_COLOR,
+                    (x + TILE_SIZE // 2, y + TILE_SIZE // 2)
+                )
+
+
+def draw_game_placeholder(screen, fonts, current_guess=""):
+    """Displays the game board and instructions during gameplay."""
     screen.fill(BACKGROUND)
-    draw_text(screen, "Placeholder", fonts["title"],
-               FONT_COLOR, (WIDTH // 2, 260))
-    draw_text(screen, "In progress...", fonts["body"],
-               FONT_COLOR, (WIDTH // 2, 340))
+
+    # Requirement 6: Display the guess instructions.
+    draw_text(
+        screen,
+        "Type a 5-letter word and press Enter",
+        fonts["body"],
+        FONT_COLOR,
+        (WIDTH // 2, 170)
+    )
+
+    # Requirements 5 and 6.1: Display the board and typed letters.
+    draw_game_board(screen, current_guess, fonts)
