@@ -10,6 +10,9 @@ BACKGROUND = (18, 18, 18)
 FONT_COLOR = (255, 255, 255)
 TILE_COLOR = (35, 35, 35)
 TILE_BORDER_COLOR = (90, 90, 90)
+CORRECT_COLOR = (83, 141, 78)
+PRESENT_COLOR = (181, 159, 59)
+ABSENT_COLOR = (58, 58, 60)
 
 # Game board dimensions
 ROWS = 5
@@ -56,12 +59,13 @@ def draw_start_screen(screen, fonts):
 
 
 
-def draw_game_board(screen, current_guess, fonts):
+def draw_game_board(screen, current_guess, fonts, guesses=None):
     """Draws the 5x5 game board and displays typed letters.
 
     Args:
         screen (pygame.Surface): The game window.
         current_guess (str): Letters currently entered by the player.
+        guesses (list): Submitted guesses and their evaluated letter states.
     """
     # Calculate the total board dimensions.
     board_width = COLS * TILE_SIZE + (COLS - 1) * TILE_GAP
@@ -79,23 +83,35 @@ def draw_game_board(screen, current_guess, fonts):
 
             tile = pygame.Rect(x, y, TILE_SIZE, TILE_SIZE)
 
-            pygame.draw.rect(screen, TILE_COLOR, tile)
+            letter = ""
+            color = TILE_COLOR
+            if guesses and row < len(guesses):
+                word, states = guesses[row]
+                letter = word[col]
+                color = {
+                    "correct": CORRECT_COLOR,
+                    "present": PRESENT_COLOR,
+                    "absent": ABSENT_COLOR
+                }[states[col]]
+            elif row == len(guesses or []) and col < len(current_guess):
+                letter = current_guess[col]
+
+            pygame.draw.rect(screen, color, tile)
             pygame.draw.rect(
                 screen, TILE_BORDER_COLOR, tile, width=2
             )
 
-            # Display letters in the first row.
-            if row == 0 and col < len(current_guess):
+            if letter:
                 draw_text(
                     screen,
-                    current_guess[col],
+                    letter,
                     fonts["tile"],
                     FONT_COLOR,
                     (x + TILE_SIZE // 2, y + TILE_SIZE // 2)
                 )
 
 
-def draw_game_placeholder(screen, fonts, current_guess=""):
+def draw_game_placeholder(screen, fonts, current_guess="", guesses=None):
     """Displays the game board and instructions during gameplay."""
     screen.fill(BACKGROUND)
 
@@ -109,4 +125,4 @@ def draw_game_placeholder(screen, fonts, current_guess=""):
     )
 
     # Requirements 5 and 6.1: Display the board and typed letters.
-    draw_game_board(screen, current_guess, fonts)
+    draw_game_board(screen, current_guess, fonts, guesses)

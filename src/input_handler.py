@@ -26,6 +26,10 @@ def get_actions():
             if event.key == pygame.K_RETURN:
                 actions.append(("enter", None))
 
+            # Handle Backspace key
+            elif event.key == pygame.K_BACKSPACE:
+                actions.append(("backspace", None))
+
             # Handle individual letter keys
             elif (
                 len(getattr(event, "unicode", "")) == 1
@@ -33,5 +37,9 @@ def get_actions():
                 and getattr(event, "unicode", "").isalpha()
             ):
                 actions.append(("letter", event.unicode.upper()))
+
+        # Handle mouse clicks, including the Retry button.
+        elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            actions.append(("click", event.pos))
 
     return actions
