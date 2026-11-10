@@ -48,10 +48,11 @@ def draw_retry_button(screen, fonts):
     )
 
 def draw_win_screen(screen, fonts):
-    """Display a colorful celebration screen when the player wins."""
+    """Display a celebration over the already-drawn board when the player wins."""
  
-    # Dark background
-    screen.fill(ui.BACKGROUND)
+    overlay = pygame.Surface((ui.WIDTH, ui.HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 175))
+    screen.blit(overlay, (0, 0))
  
     # Colorful confetti
     for x, y, color, size in confetti:
@@ -92,6 +93,7 @@ def draw_lose_screen(screen, fonts, target_word):
     overlay = pygame.Surface((ui.WIDTH, ui.HEIGHT), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 175))
     screen.blit(overlay, (0, 0))
+
     ui.draw_text(screen, "Out of guesses", fonts["title"], ui.FONT_COLOR,
                  (ui.WIDTH // 2, 400))
     ui.draw_text(screen, "The word was " + target_word, fonts["body"],

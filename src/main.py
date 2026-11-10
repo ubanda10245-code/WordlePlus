@@ -103,6 +103,7 @@ class App:
             )
  
         elif self.screen_state == "won":
+            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses)
             end_screens.draw_win_screen(self.screen, self.fonts)
  
         else:

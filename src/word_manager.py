@@ -18,5 +18,9 @@ def get_words():
 def choose_word(previous_word=None):
     """Choose a target word, avoiding the previous target when possible."""
     words = get_words()
+
+    # TEST: Set word to `APPLE`
+    # words = ['APPLE']
+
     choices = [word for word in words if word != previous_word]
     return random.choice(choices or words)
