@@ -13,6 +13,7 @@ TILE_BORDER_COLOR = (90, 90, 90)
 CORRECT_COLOR = (83, 141, 78)
 PRESENT_COLOR = (181, 159, 59)
 ABSENT_COLOR = (58, 58, 60)
+ERROR_COLOR = (220, 70, 70)
 
 # Game board dimensions
 ROWS = 5
@@ -110,9 +111,15 @@ def draw_game_board(screen, current_guess, fonts, guesses=None):
                     (x + TILE_SIZE // 2, y + TILE_SIZE // 2)
                 )
 
+def draw_game_placeholder(
+    screen,
+    fonts,
+    current_guess="",
+    guesses=None,
+    error_message=""
+):
+    """Displays the game board, instructions, and error messages."""
 
-def draw_game_placeholder(screen, fonts, current_guess="", guesses=None):
-    """Displays the game board and instructions during gameplay."""
     screen.fill(BACKGROUND)
 
     # Requirement 6: Display the guess instructions.
@@ -124,5 +131,16 @@ def draw_game_placeholder(screen, fonts, current_guess="", guesses=None):
         (WIDTH // 2, 170)
     )
 
+    # Requirement 6.4: Display an error for incomplete guesses.
+    if error_message:
+        draw_text(
+            screen,
+            error_message,
+            fonts["body"],
+            ERROR_COLOR,
+            (WIDTH // 2, 220)
+        )
+
     # Requirements 5 and 6.1: Display the board and typed letters.
     draw_game_board(screen, current_guess, fonts, guesses)
+

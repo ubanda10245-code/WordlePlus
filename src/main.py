@@ -29,6 +29,7 @@ class App:
         # Current guess entered by the player.
         self.current_guess = ""
         self.guesses = []
+        self.error_message = ""
         self.target_word = word_manager.choose_word()
 
     def reset_game(self):
@@ -36,6 +37,7 @@ class App:
         self.target_word = word_manager.choose_word(self.target_word)
         self.current_guess = ""
         self.guesses = []
+        self.error_message = ""
 
     def screen_transitions(self, action, value):
         """Update screen state based on user events."""
@@ -47,25 +49,39 @@ class App:
             self.screen_state = "playing"
             self.reset_game()
 
+        
         elif self.screen_state == "playing" and action == "letter":
             # Only allow five letters in the current guess.
             if len(self.current_guess) < 5:
                 self.current_guess += value
+                self.error_message = ""
 
         elif self.screen_state == "playing" and action == "backspace":
             self.current_guess = self.current_guess[:-1]
+            self.error_message = ""
 
         elif self.screen_state == "playing" and action == "enter":
             if len(self.current_guess) == 5:
+                self.error_message = ""
+
                 states = game_logic.evaluate_guess(
                     self.current_guess, self.target_word
                 )
+
                 self.guesses.append((self.current_guess, states))
+
                 if self.current_guess == self.target_word:
                     self.screen_state = "won"
-                elif game_logic.has_lost(self.guesses, self.target_word):
+                elif game_logic.has_lost(
+                    self.guesses, self.target_word
+                ):
                     self.screen_state = "lost"
+
                 self.current_guess = ""
+
+            else:
+                self.error_message = "Enter 5 letters."
+
 
         elif self.screen_state in ("won", "lost"):
             if action == "enter" or (
@@ -81,7 +97,7 @@ class App:
 
         elif self.screen_state == "playing":
             ui.draw_game_placeholder(
-                self.screen, self.fonts, self.current_guess, self.guesses
+                self.screen, self.fonts, self.current_guess, self.guesses, self.error_message
             )
 
         else:

@@ -23,7 +23,7 @@ def get_actions():
         elif event.type == pygame.KEYDOWN:
 
             # Handle Enter key
-            if event.key == pygame.K_RETURN:
+            if event.key in (pygame.K_RETURN, pygame.K_KP_ENTER):
                 actions.append(("enter", None))
 
             # Handle Backspace key
