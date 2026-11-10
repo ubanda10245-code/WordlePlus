@@ -70,7 +70,9 @@ class App:
 
                 self.guesses.append((self.current_guess, states))
 
-                if self.current_guess == self.target_word:
+
+                if game_logic.check_win(self.current_guess, self.target_word):
+
                     self.screen_state = "won"
                 elif game_logic.has_lost(
                     self.guesses, self.target_word
@@ -91,22 +93,24 @@ class App:
 
     def draw_screen(self):
         """Draw new/updated screen state."""
-
+ 
         if self.screen_state == "start":
             ui.draw_start_screen(self.screen, self.fonts)
-
+ 
         elif self.screen_state == "playing":
             ui.draw_game_placeholder(
                 self.screen, self.fonts, self.current_guess, self.guesses, self.error_message
             )
-
+ 
+        elif self.screen_state == "won":
+            end_screens.draw_win_screen(self.screen, self.fonts)
+ 
         else:
             ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses)
-            end_screens.draw_end_screen(
-                self.screen, self.fonts, self.target_word,
-                self.screen_state == "won"
+            end_screens.draw_lose_screen(
+                self.screen, self.fonts, self.target_word
             )
-
+ 
         pygame.display.flip()
 
     def run(self):
