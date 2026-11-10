@@ -25,6 +25,11 @@ def evaluate_guess(guess, target):
 
     return states
 
+# If the player has guessed the target word
+def check_win(guess: str, target_word: str) -> bool:
+    """Return whether *guess* matches *target_word* (ignoring letter case)."""
+    return guess.upper() == target_word.upper()
+
 # If the player has used all their guesses and not found the target word.
 def has_lost(guesses, target: str, maximum_guesses: int = 5) -> bool:
     """Return whether the player used every guess without finding *target*."""
