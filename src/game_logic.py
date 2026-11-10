@@ -1,6 +1,5 @@
 """Game rules used by the WordlePlus application."""
 
-
 def evaluate_guess(guess, target):
     """Return the Wordle-style state for each letter in *guess*.
 
@@ -12,11 +11,13 @@ def evaluate_guess(guess, target):
     states = ["absent"] * len(guess)
     remaining = list(target)
 
+    # Identify correct letters in the correct positions
     for index, letter in enumerate(guess):
         if letter == target[index]:
             states[index] = "correct"
             remaining[index] = None
 
+    # Identify letters that are present but in the wrong position
     for index, letter in enumerate(guess):
         if states[index] == "absent" and letter in remaining:
             states[index] = "present"
@@ -24,7 +25,7 @@ def evaluate_guess(guess, target):
 
     return states
 
-
-def has_lost(guesses, target, maximum_guesses=5):
+# If the player has used all their guesses and not found the target word.
+def has_lost(guesses, target: str, maximum_guesses: int = 5) -> bool:
     """Return whether the player used every guess without finding *target*."""
     return len(guesses) >= maximum_guesses and guesses[-1][0] != target
