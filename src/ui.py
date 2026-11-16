@@ -21,6 +21,13 @@ COLS = 5
 TILE_SIZE = 64
 TILE_GAP = 10
 
+# Difficulty selection buttons
+DIFFICULTY_BUTTONS = {
+    "EASY": pygame.Rect(WIDTH // 2 - 140, 300, 280, 65),
+    "MEDIUM": pygame.Rect(WIDTH // 2 - 140, 395, 280, 65),
+    "HARD": pygame.Rect(WIDTH // 2 - 140, 490, 280, 65),
+}
+
 
 def make_fonts():
     """Dictionary of font types."""
@@ -58,6 +65,47 @@ def draw_start_screen(screen, fonts):
         FONT_COLOR, (WIDTH // 2, 330)
     )
 
+
+def draw_difficulty_screen(screen, fonts):
+    """Display difficulty selection screen with EASY, MEDIUM, and HARD options."""
+    screen.fill(BACKGROUND)
+
+    draw_text(
+        screen, "Select Difficulty", fonts["title"],
+        FONT_COLOR, (WIDTH // 2, 160)
+    )
+
+    draw_text(
+        screen, "Choose a difficulty to begin:", fonts["body"],
+        FONT_COLOR, (WIDTH // 2, 235)
+    )
+
+    button_colors = {
+        "EASY": CORRECT_COLOR,
+        "MEDIUM": PRESENT_COLOR,
+        "HARD": ERROR_COLOR,
+    }
+
+    for label, rect in DIFFICULTY_BUTTONS.items():
+        pygame.draw.rect(screen, button_colors[label], rect, border_radius=8)
+        pygame.draw.rect(screen, TILE_BORDER_COLOR, rect, width=2, border_radius=8)
+        draw_text(screen, label, fonts["body"], FONT_COLOR, rect.center)
+
+    draw_text(
+        screen,
+        "Click a button or press E (Easy), M (Medium), or H (Hard)",
+        fonts["body"],
+        FONT_COLOR,
+        (WIDTH // 2, 625)
+    )
+
+
+def get_difficulty_click(position):
+    """Return 'EASY', 'MEDIUM', or 'HARD' if *position* clicks a button, else None."""
+    for difficulty, rect in DIFFICULTY_BUTTONS.items():
+        if rect.collidepoint(position):
+            return difficulty
+    return None
 
 
 def draw_game_board(screen, current_guess, fonts, guesses=None):
@@ -111,6 +159,7 @@ def draw_game_board(screen, current_guess, fonts, guesses=None):
                     (x + TILE_SIZE // 2, y + TILE_SIZE // 2)
                 )
 
+
 def draw_game_placeholder(
     screen,
     fonts,
@@ -143,4 +192,3 @@ def draw_game_placeholder(
 
     # Requirements 5 and 6.1: Display the board and typed letters.
     draw_game_board(screen, current_guess, fonts, guesses)
-
