@@ -45,6 +45,11 @@ class App:
     def screen_transitions(self, action, value):
         """Update screen state based on user events."""
 
+        word_length = (
+            word_manager.DIFFICULTY_CONFIG[self.difficulty][1]
+            if self.difficulty else 5
+        )
+
         if action == "quit":
             self.running = False
 
@@ -66,8 +71,8 @@ class App:
                 self.screen_state = "playing"
 
         elif self.screen_state == "playing" and action == "letter":
-            # Only allow five letters in the current guess.
-            if len(self.current_guess) < 5:
+            # Only allow letters of the correct length in the current guess.
+            if len(self.current_guess) < word_length:
                 self.current_guess += value
                 self.error_message = ""
 
@@ -76,7 +81,7 @@ class App:
             self.error_message = ""
 
         elif self.screen_state == "playing" and action == "enter":
-            if len(self.current_guess) == 5:
+            if len(self.current_guess) == word_length:
                 self.error_message = ""
 
                 states = game_logic.evaluate_guess(
@@ -95,34 +100,52 @@ class App:
                 self.current_guess = ""
 
             else:
-                self.error_message = "Enter 5 letters."
+                self.error_message = f"Enter {word_length} letters."
 
         elif self.screen_state in ("won", "lost"):
             if action == "enter" or (
                     action == "click" and end_screens.is_retry_click(value)):
-                self.reset_game()
-                self.screen_state = "playing"
+                self.screen_state = "difficulty"
 
     def draw_screen(self):
         """Draw new/updated screen state."""
+
+        word_length = (
+            word_manager.DIFFICULTY_CONFIG[self.difficulty][1]
+            if self.difficulty else 5
+        )
 
         if self.screen_state == "start":
             ui.draw_start_screen(self.screen, self.fonts)
 
         elif self.screen_state == "difficulty":
+            if self.target_word is None:
+                self.screen.fill(ui.BACKGROUND)
+            else:
+                ui.draw_game_placeholder(
+                    self.screen,
+                    self.fonts,
+                    guesses=self.guesses,
+                    word_length=word_length,
+                )
             ui.draw_difficulty_screen(self.screen, self.fonts)
 
         elif self.screen_state == "playing":
             ui.draw_game_placeholder(
-                self.screen, self.fonts, self.current_guess, self.guesses, self.error_message
+                self.screen,
+                self.fonts,
+                self.current_guess,
+                self.guesses,
+                self.error_message, 
+                word_length
             )
 
         elif self.screen_state == "won":
-            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses)
+            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses, word_length=word_length)
             end_screens.draw_win_screen(self.screen, self.fonts)
 
         else:
-            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses)
+            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses, word_length=word_length)
             end_screens.draw_lose_screen(
                 self.screen, self.fonts, self.target_word
             )

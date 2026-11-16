@@ -6,7 +6,7 @@ import random
 BASE_DIR = Path(__file__).resolve().parent
 
 DIFFICULTY_CONFIG = {
-    "EASY": (BASE_DIR / "word_dictionary_easy.txt", 3),
+    "EASY": (BASE_DIR / "word_dictionary_easy.txt", 4),
     "MEDIUM": (BASE_DIR / "word_dictionary_medium.txt", 5),
     "HARD": (BASE_DIR / "word_dictionary_hard.txt", 6),
 }
@@ -32,6 +32,6 @@ def choose_word(previous_word=None, difficulty="MEDIUM"):
     selected_word = random.choice(choices or words)
 
     # Debug chosen word for testing.
-    #print(f"Chosen word: {selected_word}")
+    # print(f"Chosen word: {selected_word}")
 
     return selected_word

@@ -17,7 +17,6 @@ ERROR_COLOR = (220, 70, 70)
 
 # Game board dimensions
 ROWS = 5
-COLS = 5
 TILE_SIZE = 64
 TILE_GAP = 10
 
@@ -68,7 +67,9 @@ def draw_start_screen(screen, fonts):
 
 def draw_difficulty_screen(screen, fonts):
     """Display difficulty selection screen with EASY, MEDIUM, and HARD options."""
-    screen.fill(BACKGROUND)
+    overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
+    overlay.fill((0, 0, 0, 175))
+    screen.blit(overlay, (0, 0))
 
     draw_text(
         screen, "Select Difficulty", fonts["title"],
@@ -108,7 +109,7 @@ def get_difficulty_click(position):
     return None
 
 
-def draw_game_board(screen, current_guess, fonts, guesses=None):
+def draw_game_board(screen, current_guess, fonts, guesses=None, word_length=5):
     """Draws the 5x5 game board and displays typed letters.
 
     Args:
@@ -117,7 +118,7 @@ def draw_game_board(screen, current_guess, fonts, guesses=None):
         guesses (list): Submitted guesses and their evaluated letter states.
     """
     # Calculate the total board dimensions.
-    board_width = COLS * TILE_SIZE + (COLS - 1) * TILE_GAP
+    board_width = word_length * TILE_SIZE + (word_length - 1) * TILE_GAP
     board_height = ROWS * TILE_SIZE + (ROWS - 1) * TILE_GAP
 
     # Calculate the top-left corner to center the board.
@@ -126,7 +127,7 @@ def draw_game_board(screen, current_guess, fonts, guesses=None):
 
     # Draw each tile.
     for row in range(ROWS):
-        for col in range(COLS):
+        for col in range(word_length):
             x = start_x + col * (TILE_SIZE + TILE_GAP)
             y = start_y + row * (TILE_SIZE + TILE_GAP)
 
@@ -165,7 +166,8 @@ def draw_game_placeholder(
     fonts,
     current_guess="",
     guesses=None,
-    error_message=""
+    error_message="",
+    word_length=5
 ):
     """Displays the game board, instructions, and error messages."""
 
@@ -174,7 +176,7 @@ def draw_game_placeholder(
     # Requirement 6: Display the guess instructions.
     draw_text(
         screen,
-        "Type a 5-letter word and press Enter",
+        f"Type a {word_length}-letter word and press Enter",
         fonts["body"],
         FONT_COLOR,
         (WIDTH // 2, 170)
@@ -191,4 +193,4 @@ def draw_game_placeholder(
         )
 
     # Requirements 5 and 6.1: Display the board and typed letters.
-    draw_game_board(screen, current_guess, fonts, guesses)
+    draw_game_board(screen, current_guess, fonts, guesses, word_length)
