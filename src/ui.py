@@ -67,6 +67,8 @@ def draw_start_screen(screen, fonts):
 
 def draw_difficulty_screen(screen, fonts):
     """Display difficulty selection screen with EASY, MEDIUM, and HARD options."""
+    # Clear the previous game before showing difficulty selection.
+    screen.fill(BACKGROUND)
     overlay = pygame.Surface((WIDTH, HEIGHT), pygame.SRCALPHA)
     overlay.fill((0, 0, 0, 175))
     screen.blit(overlay, (0, 0))
@@ -167,7 +169,8 @@ def draw_game_placeholder(
     current_guess="",
     guesses=None,
     error_message="",
-    word_length=5
+    word_length=5,
+    score=0
 ):
     """Displays the game board, instructions, and error messages."""
 
@@ -180,6 +183,14 @@ def draw_game_placeholder(
         fonts["body"],
         FONT_COLOR,
         (WIDTH // 2, 170)
+    )
+    # Requirement 12.3: Display current score during gameplay.
+    draw_text(
+        screen,
+        f"Score: {score}",
+        fonts["body"],
+        (245, 205, 85),
+        (WIDTH // 2, 245)
     )
 
     # Requirement 6.4: Display an error for incomplete guesses.

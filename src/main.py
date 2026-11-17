@@ -8,6 +8,7 @@ import game_logic
 import input_handler
 import ui
 import word_manager
+import score_tracker
 
 FPS = 60
 
@@ -32,6 +33,8 @@ class App:
         self.guesses = []
         self.error_message = ""
         self.target_word = None
+        
+        self.score = 0
 
     def reset_game(self):
         """Start a new game with an empty board and a new target word."""
@@ -41,6 +44,7 @@ class App:
         self.current_guess = ""
         self.guesses = []
         self.error_message = ""
+        self.score = 0
 
     def screen_transitions(self, action, value):
         """Update screen state based on user events."""
@@ -87,10 +91,21 @@ class App:
                 states = game_logic.evaluate_guess(
                     self.current_guess, self.target_word
                 )
+                
+                # Requirement 12.1: Award points for correctly placed letters.
+                self.score += score_tracker.calculate_letter_points(states)
+                print("Guess:", self.current_guess)
+                print("Letter states:", states)
+                print("Current score:", self.score)         
 
                 self.guesses.append((self.current_guess, states))
 
                 if game_logic.check_win(self.current_guess, self.target_word):
+                    # Requirement 12.2: Bonus for winning in fewer guesses.
+                    self.score += score_tracker.calculate_win_bonus(
+                        len(self.guesses)
+
+                     )
                     self.screen_state = "won"
                 elif game_logic.has_lost(
                     self.guesses, self.target_word
@@ -137,17 +152,18 @@ class App:
                 self.current_guess,
                 self.guesses,
                 self.error_message, 
-                word_length
+                word_length,
+                self.score
             )
 
         elif self.screen_state == "won":
             ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses, word_length=word_length)
-            end_screens.draw_win_screen(self.screen, self.fonts)
+            end_screens.draw_win_screen(self.screen, self.fonts, self.score)
 
         else:
             ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses, word_length=word_length)
             end_screens.draw_lose_screen(
-                self.screen, self.fonts, self.target_word
+                self.screen, self.fonts, self.target_word, self.score
             )
 
         pygame.display.flip()

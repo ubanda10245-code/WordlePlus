@@ -47,11 +47,11 @@ def draw_retry_button(screen, fonts):
         RETRY_BUTTON.center
     )
 
-def draw_win_screen(screen, fonts):
+def draw_win_screen(screen, fonts, score=0):
     """Display a celebration over the already-drawn board when the player wins."""
  
     overlay = pygame.Surface((ui.WIDTH, ui.HEIGHT), pygame.SRCALPHA)
-    overlay.fill((0, 0, 0, 175))
+    overlay.fill((0, 0, 0, 230))
     screen.blit(overlay, (0, 0))
  
     # Colorful confetti
@@ -80,12 +80,20 @@ def draw_win_screen(screen, fonts):
         ui.FONT_COLOR,
         (ui.WIDTH // 2, 330)
     )
+    # Requirement 12.3: Display final score
+    ui.draw_text(
+        screen,
+        f"Final Score: {score}",
+        fonts["body"],
+        YELLOW,
+        (ui.WIDTH // 2, 410)
+    )
  
     draw_retry_button(screen, fonts)
  
     return RETRY_BUTTON
 
-def draw_lose_screen(screen, fonts, target_word):
+def draw_lose_screen(screen, fonts, target_word, score=0):
     """Draw the lose message over the board, with the Retry button.
  
     The board must already be drawn on *screen* before this is called.
@@ -98,6 +106,14 @@ def draw_lose_screen(screen, fonts, target_word):
                  (ui.WIDTH // 2, 400))
     ui.draw_text(screen, "The word was " + target_word, fonts["body"],
                  ui.FONT_COLOR, (ui.WIDTH // 2, 485))
+    # Requirement 12.3: Display final score
+    ui.draw_text(
+        screen,
+        f"Final Score: {score}",
+        fonts["body"],
+        YELLOW,
+        (ui.WIDTH // 2, 530)
+    )
  
     draw_retry_button(screen, fonts)
  
