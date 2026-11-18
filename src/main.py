@@ -157,11 +157,25 @@ class App:
             )
 
         elif self.screen_state == "won":
-            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses, word_length=word_length)
+            ui.draw_game_placeholder(
+                self.screen,
+                self.fonts,
+                "",
+                self.guesses,
+                word_length=word_length,
+                score=self.score
+            )
             end_screens.draw_win_screen(self.screen, self.fonts, self.score)
 
         else:
-            ui.draw_game_placeholder(self.screen, self.fonts, "", self.guesses, word_length=word_length)
+            ui.draw_game_placeholder(
+                self.screen,
+                self.fonts,
+                "",
+                self.guesses,
+                word_length=word_length,
+                score=self.score
+            )
             end_screens.draw_lose_screen(
                 self.screen, self.fonts, self.target_word, self.score
             )

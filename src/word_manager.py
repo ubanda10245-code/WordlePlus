@@ -32,6 +32,6 @@ def choose_word(previous_word=None, difficulty="MEDIUM"):
     selected_word = random.choice(choices or words)
 
     # Debug chosen word for testing.
-    # print(f"Chosen word: {selected_word}")
+    print(f"Chosen word: {selected_word}")
 
     return selected_word
