@@ -40,6 +40,7 @@ def get_actions():
 
         # Handle mouse clicks, including the Retry button.
         elif event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+            
             actions.append(("click", event.pos))
 
     return actions

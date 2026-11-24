@@ -14,3 +14,10 @@ def calculate_win_bonus(guesses_used):
     """Award more bonus points for winning in fewer guesses."""
     remaining_guesses = MAX_GUESSES - guesses_used + 1
     return max(0, remaining_guesses) * 10
+
+HINT_PENALTY = 20
+
+
+def calculate_hint_penalty():
+    """Return the point penalty for using a vowel hint."""
+    return HINT_PENALTY

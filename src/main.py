@@ -35,6 +35,8 @@ class App:
         self.target_word = None
         
         self.score = 0
+        self.hint_used = False
+        self.vowel_hint = None
 
     def reset_game(self):
         """Start a new game with an empty board and a new target word."""
@@ -45,6 +47,8 @@ class App:
         self.guesses = []
         self.error_message = ""
         self.score = 0
+        self.hint_used = False
+        self.vowel_hint = None
 
     def screen_transitions(self, action, value):
         """Update screen state based on user events."""
@@ -73,6 +77,22 @@ class App:
                 self.difficulty = selected_difficulty
                 self.reset_game()
                 self.screen_state = "playing"
+            
+        elif self.screen_state == "playing" and action == "click":
+            print("GAME CLICK:", value)
+            print("BUTTON RECT:", ui.HINT_BUTTON)
+            print("COLLISION:", ui.HINT_BUTTON.collidepoint(value))
+
+            if ui.HINT_BUTTON.collidepoint(value) and not self.hint_used:
+                self.vowel_hint = game_logic.get_vowel_hint(
+                    self.target_word
+                )
+                self.hint_used = True
+                self.score -= score_tracker.calculate_hint_penalty()
+
+                print("HINT ACTIVATED!")
+                print("VOWEL HINT:", self.vowel_hint)
+                print("CURRENT SCORE:", self.score)
 
         elif self.screen_state == "playing" and action == "letter":
             # Only allow letters of the correct length in the current guess.
@@ -151,9 +171,11 @@ class App:
                 self.fonts,
                 self.current_guess,
                 self.guesses,
-                self.error_message, 
-                word_length,
-                self.score
+                  self.error_message,
+                  word_length,
+                  self.score,
+                  vowel_hint=self.vowel_hint,
+                  hint_used=self.hint_used
             )
 
         elif self.screen_state == "won":

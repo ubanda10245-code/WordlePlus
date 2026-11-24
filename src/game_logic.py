@@ -34,3 +34,13 @@ def check_win(guess: str, target_word: str) -> bool:
 def has_lost(guesses, target: str, maximum_guesses: int = 5) -> bool:
     """Return whether the player used every guess without finding *target*."""
     return len(guesses) >= maximum_guesses and guesses[-1][0] != target
+
+
+def get_vowel_hint(target_word: str) -> list:
+    """Return vowels in their original positions and blanks elsewhere."""
+    vowels = "AEIOU"
+
+    return [
+        letter if letter.upper() in vowels else ""
+        for letter in target_word
+    ]

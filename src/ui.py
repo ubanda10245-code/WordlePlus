@@ -20,6 +20,9 @@ ROWS = 5
 TILE_SIZE = 64
 TILE_GAP = 10
 
+# Requirement 13: Vowel hint button
+HINT_BUTTON = pygame.Rect(WIDTH // 2 - 100, 730, 200, 50)
+
 # Difficulty selection buttons
 DIFFICULTY_BUTTONS = {
     "EASY": pygame.Rect(WIDTH // 2 - 140, 300, 280, 65),
@@ -162,7 +165,6 @@ def draw_game_board(screen, current_guess, fonts, guesses=None, word_length=5):
                     (x + TILE_SIZE // 2, y + TILE_SIZE // 2)
                 )
 
-
 def draw_game_placeholder(
     screen,
     fonts,
@@ -170,13 +172,14 @@ def draw_game_placeholder(
     guesses=None,
     error_message="",
     word_length=5,
-    score=0
+    score=0,
+    vowel_hint=None,
+    hint_used=False
 ):
     """Displays the game board, instructions, and error messages."""
 
     screen.fill(BACKGROUND)
 
-    # Requirement 6: Display the guess instructions.
     draw_text(
         screen,
         f"Type a {word_length}-letter word and press Enter",
@@ -184,7 +187,7 @@ def draw_game_placeholder(
         FONT_COLOR,
         (WIDTH // 2, 170)
     )
-    # Requirement 12.3: Display current score during gameplay.
+
     draw_text(
         screen,
         f"Score: {score}",
@@ -193,7 +196,6 @@ def draw_game_placeholder(
         (WIDTH // 2, 245)
     )
 
-    # Requirement 6.4: Display an error for incomplete guesses.
     if error_message:
         draw_text(
             screen,
@@ -203,5 +205,36 @@ def draw_game_placeholder(
             (WIDTH // 2, 220)
         )
 
-    # Requirements 5 and 6.1: Display the board and typed letters.
     draw_game_board(screen, current_guess, fonts, guesses, word_length)
+
+    # Requirement 13.1: Display vowel positions.
+    if vowel_hint is not None:
+        hint_text = "  ".join(
+            letter if letter else "_" for letter in vowel_hint
+        )
+        draw_text(
+            screen,
+            hint_text,
+            fonts["body"],
+            PRESENT_COLOR,
+            (WIDTH // 2, 680)
+        )
+
+    # Requirement 13: Display the hint button.
+    button_color = ABSENT_COLOR if hint_used else CORRECT_COLOR
+    pygame.draw.rect(
+        screen, button_color, HINT_BUTTON, border_radius=8
+    )
+    pygame.draw.rect(
+        screen, TILE_BORDER_COLOR, HINT_BUTTON,
+        width=2, border_radius=8
+    )
+
+    button_text = "Hint Used" if hint_used else "Reveal Vowels"
+    draw_text(
+        screen,
+        button_text,
+        fonts["body"],
+        FONT_COLOR,
+        HINT_BUTTON.center
+    )
